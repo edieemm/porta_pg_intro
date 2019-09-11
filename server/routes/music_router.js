@@ -34,9 +34,9 @@ let musicLibrary = [
     }
 ]
 
-router.get('/', (req, res) => {
-    res.send(musicLibrary);
-});
+// app.get('/', (req, res) => {
+//     res.send(musicLibrary);
+// });
 
 router.post('/', (req, res) => {
     console.log("HELLO FROM THE POST", req.body);
