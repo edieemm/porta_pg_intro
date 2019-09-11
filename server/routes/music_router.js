@@ -18,15 +18,30 @@ router.post('/', (req, res) => {
     console.log("HELLO FROM THE POST", req.body);
     let newSong = req.body;
     let queryText = `INSERT INTO "songs" ("rank", "artist", "track", "published")
-        VALUES (${newSong.rank}, '${newSong.artist}', '${newSong.track}', '${newSong.published}');`;
-        console.log(queryText)
-    pool.query(queryText).then((result) => {
+        VALUES ($1, $2, $3, $4);`;
+
+    console.log(queryText)
+    pool.query(queryText, [newSong.rank, newSong.artist, newSong.track, newSong.published])
+    .then((result) => {
         console.log("POST result", result);
-        res.sendStatus(200);
+        res.sendStatus(201);
     }).catch((error) => {
         console.log('error making query', error);
         res.sendStatus(500)
     })
+})
+
+router.delete('/:id', (req, res) => {
+    console.log('deletes are talking! & sent back', req.params.id)
+    let queryText = `DELETE FROM "songs" WHERE "id" = ${req.params.id};`;
+    pool.query(queryText)
+        .then((result) => {
+            console.log("DELETE result", result);
+            res.sendStatus(201);
+        }).catch((error) => {
+            console.log('error making query', error);
+            res.sendStatus(500)
+        })
 })
 
 module.exports = router;
