@@ -12,30 +12,44 @@ function getMusicData() {
         type: 'GET',
         url: '/musicLibrary'
     }).then(function (response) {
-        console.log("skjfhsd", response);
         // append data to the DOM
         for (let i = 0; i < response.length; i++) {
             $('#musicTableBody').append(`
-                <tr>
+                <tr data-id="${response[i].id}">
                     <td>${response[i].artist}</td>
                     <td>${response[i].track}</td>
                     <td>${response[i].rank}</td>
                     <td>${response[i].published}</td>
-                    <td><button data-id="${response[i].id}" class="deleteThis">Delete</button></td>
+                    <td><button class="deleteThis">Delete</button></td>
+                    <td><button class="update">+</button><button class="update">-</button></td>
                 </tr>
             `);
         }
         $('.deleteThis').on('click', deleteBtn)
+        $('.update').on('click', updateRank)
     });
 }
 
 function deleteBtn(){
-    let songId = $(this).data('id');
+    let songId = $(this).parent().parent().data('id');
     console.log('delete!', songId);
     $.ajax({
         type: 'DELETE',
         url: `/musicLibrary/${songId}`
     }).then( function(response) {
+        console.log(response)
+        getMusicData();
+    })
+}
+function updateRank(){
+    let direction = $(this).text();
+    let songId = $(this).parent().parent().data('id');
+    console.log(direction, songId);
+    $.ajax({
+        type: 'PUT',
+        url: `/musicLibrary/rank/${songId}`,
+        data: { direction: direction }
+    }).then(function (response) {
         console.log(response)
         getMusicData();
     })
