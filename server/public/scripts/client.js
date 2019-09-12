@@ -50,7 +50,6 @@ function updateRank(){
         url: `/musicLibrary/rank/${songId}`,
         data: { direction: direction }
     }).then(function (response) {
-        console.log(response)
         getMusicData();
     })
 }

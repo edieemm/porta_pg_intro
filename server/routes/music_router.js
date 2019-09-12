@@ -45,30 +45,26 @@ router.delete('/:id', (req, res) => {
 })
 
 router.put('/rank/:id', (req, res) => {
-    let id = req.params.id;
-    let direction = req.body.direction;
-    console.log('puts are talking! & sent back', direction, id);
-    let queryText = updateRankQueryText(direction, id);
-    // let queryText = `UPDATE "songs" SET "rank" = "rank" ${direction} 1 WHERE "id" = ${id};`;
-    console.log(queryText)
+    let id = req.params.id;  // id of selected row
+    let direction = req.body.direction; // whether row is increaseing or decreasing in rank
+    let queryText = updateRankQueryText(direction); // determines whether direction is '+' or '-' and writes query accordingly
     pool.query(queryText, [id])
-        .then((result) => {
-            console.log("result", result);
+        .then(() => {
             res.sendStatus(201);
         }).catch((error) => {
-            console.log('error making query', error);
+            console.log('error making put request', error);
             res.sendStatus(500)
         })
 })
 
-function updateRankQueryText(direction, id){
+function updateRankQueryText(direction){
     let queryText = '';
     if (direction == '+'){
         queryText = `UPDATE "songs" SET "rank" = "rank" + 1 WHERE "id" = $1;`;
     } else if (direction == '-'){
         queryText = `UPDATE "songs" SET "rank" = "rank" - 1 WHERE "id" = $1;`;
     } else {
-        queryText = 'error';
+        res.sendStatus(500);
     }
     return queryText;
 }
